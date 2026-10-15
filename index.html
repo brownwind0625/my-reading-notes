@@ -149,11 +149,23 @@ const say=t=>{$('#msg').textContent=t||''};
 const note=t=>{$('#note').textContent=t||''};
 
 function show(t){
-  for(const k of['home','lib','add'])$('#v-'+k).hidden=k!==t;
-  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
-  window.scrollTo(0,0);
+  if(!t) return;
+  ['home','lib','add'].forEach(k => {
+    const sec = $('#v-' + k);
+    if(sec) sec.hidden = (k !== t);
+  });
+  document.querySelectorAll('nav button').forEach(b => {
+    b.classList.toggle('on', b.getAttribute('data-t') === t);
+  });
+  window.scrollTo(0, 0);
 }
-document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.t)});
+
+document.querySelectorAll('nav button').forEach(b => {
+  b.onclick = function(e) {
+    e.preventDefault();
+    show(this.getAttribute('data-t'));
+  };
+});
 
 const thumb=(b,c)=>b.cover?`<img class="cv ${c||''}" loading="lazy" alt="" src="${b.cover}">`:`<div class="cv ${c||''}" style="background:hsl(${hue(b.title)} 35% 40%)"></div>`;
 
