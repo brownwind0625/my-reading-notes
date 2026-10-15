@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>내 독서 노트</title>
+<link rel="apple-touch-icon" href="https://img.icons8.com/color/180/open-book.png">
+<style>
+:root{--bg:#f4efe6;--card:#fffdf8;--tx:#2b2620;--mu:#8a8174;--ac:#8a4b2a;--bd:#e3dacb;--bar:#e2c9b3;--star:#d89a1d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1714;--card:#25211d;--tx:#efe9df;--mu:#a1978a;--ac:#e0a070;--bd:#3a342d;--bar:#5a3f2c;--star:#f0b84a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1a1714;--card:#25211d;--tx:#efe9df;--mu:#a1978a;--ac:#e0a070;--bd:#3a342d;--bar:#5a3f2c;--star:#f0b84a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 -apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+h1,h2,h3{margin:0}
+main{max-width:720px;margin:0 auto;padding:18px 16px 96px}
+h1{font-size:24px}h2{font-size:17px;margin-bottom:10px}
+.sub,.mu{color:var(--mu);font-size:12px}.sub{margin:2px 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+@media(min-width:560px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:20px}.stat span{color:var(--mu);font-size:12px}
+.track{height:12px;background:var(--bd);border-radius:6px;overflow:hidden;margin:8px 0}
+.fill{height:100%;background:var(--ac);border-radius:6px}
+.row{display:grid;grid-template-columns:48px 1fr auto;gap:8px;align-items:center;margin:6px 0;font-size:13px}
+.row.g{grid-template-columns:84px 1fr auto}
+.bar{height:10px;background:var(--bar);border-radius:5px;min-width:2px}
+.inl{display:flex;gap:8px;align-items:center}
+input,select,textarea,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px;width:100%}
+textarea{min-height:90px;resize:vertical}
+button{width:auto;cursor:pointer}button.pri{background:var(--ac);color:var(--card);border-color:var(--ac)}
+.inl input{width:80px}
+form{display:grid;grid-template-columns:1fr 1fr;gap:8px}form .full{grid-column:1/-1}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+.chips label{position:relative;cursor:pointer}
+.chips input{position:absolute;opacity:0;width:0;height:0;padding:0;border:0}
+.chips span,.chips button{display:inline-block;border:1px solid var(--bd);border-radius:16px;padding:3px 12px;font-size:13px;background:var(--bg)}
+.chips input:checked+span,.chips .on{background:var(--ac);color:var(--card);border-color:var(--ac)}
+.chips input:focus-visible+span{outline:2px solid var(--ac)}
+.cov{display:flex;gap:8px;align-items:center;margin-top:4px}
+.cv{width:64px;height:92px;object-fit:cover;border-radius:6px;border:1px solid var(--bd);flex:none}
+.sm{width:40px;height:58px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(4,1fr)}}
+.bk{cursor:pointer;min-width:0}
+.bk .im{aspect-ratio:2/3;width:100%;height:auto;border-radius:8px;object-fit:cover;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-size:13px;font-weight:700;color:#fff;overflow:hidden}
+.bk b{display:block;font-size:13px;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stars{color:var(--star);letter-spacing:1px;font-size:13px}
+.li{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--bd);cursor:pointer}.li:first-of-type{border-top:0}
+.li .t{flex:1;min-width:0}.li b{display:block}
+.rv{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--mu);font-size:13px}
+.tag{display:inline-block;background:var(--bar);border-radius:10px;padding:0 8px;font-size:12px;margin-right:4px}
+.empty{color:var(--mu);text-align:center;padding:18px 0}
+#note{color:var(--mu);font-size:12px;margin:0 0 10px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;border-radius:0;background:transparent;padding:10px 4px;font-size:12px;color:var(--mu)}
+nav button b{display:block;font-size:20px;line-height:1.2}
+nav button.on{color:var(--ac);font-weight:700}
+#modal{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+#modal[hidden]{display:none}
+#sheet{background:var(--card);width:100%;max-width:560px;max-height:88%;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+@media(min-width:600px){#modal{align-items:center}#sheet{border-radius:16px}}
+.rvf{white-space:pre-wrap;margin:10px 0}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:3px 0;font-size:14px}
+.sr .st button{border:0;background:none;padding:0 3px;font-size:24px;line-height:1;color:var(--bd)}
+.sr .st button.on{color:var(--star)}
+form label.mu{display:block}form label.mu input{margin-top:3px}
+</style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<main>
+<h1>📚 내 독서 노트</h1>
+<p class="sub">리디에서 읽은 소설의 리뷰 · 지출 · 독서량 · 취향</p>
+<div id="note"></div>
+
+<section id="v-home">
+<div class="stats" id="stats"></div>
+<div class="card"><h2>올해 독서 목표</h2><div id="goalbox"></div>
+<div class="inl"><input id="goalin" type="number" min="1" aria-label="목표 권수"><span class="mu">권</span><button id="goalsave">목표 저장</button></div></div>
+<div class="card"><h2>월별 독서·지출 (최근 6개월)</h2><div id="months"></div></div>
+<div class="card"><h2>장르별 취향</h2><div id="genres"></div></div>
+<div class="card"><h2>별점 높은 책 TOP 5</h2><div id="top"></div></div>
+<div class="card"><h2>최근 리뷰</h2><div id="recent"></div></div>
+</section>
+
+<section id="v-lib" hidden>
+<div class="chips" id="fchips"></div>
+<div class="inl" style="margin:8px 0 12px"><select id="fr" style="width:auto"><option value="0">별점 전체</option><option value="4">★4 이상</option><option value="5">★5만</option></select><span class="mu" id="cnt"></span></div>
+<div class="grid" id="grid"></div>
+</section>
+
+<section id="v-add" hidden>
+<div class="card">
+<h2 id="formTitle">책 기록하기</h2>
+<form id="f">
+<input class="full" id="title" placeholder="제목 *" required>
+<input class="full" id="author" placeholder="작가">
+<div class="full" id="cwrap"><div class="mu">표지 이미지 (선택)</div><div class="cov"><img id="cprev" class="cv" alt="표지 미리보기" hidden><button type="button" id="cpick">표지 선택</button><button type="button" id="cclear" hidden>제거</button><input type="file" id="cfile" accept="image/*" hidden></div></div>
+<div class="full"><div class="mu">장르 (해당하는 것을 모두 체크)</div><div class="chips" id="gchips"></div></div>
+<input id="vols" type="number" min="1" placeholder="총 권수">
+<input id="price" type="number" min="0" step="100" placeholder="결제 금액(원)">
+<label class="mu">시작일<input id="start" type="date"></label>
+<label class="mu">완독일<input id="date" type="date"></label>
+<select id="rating" class="full"><option value="5">★★★★★ 최고예요</option><option value="4">★★★★ 좋았어요</option><option value="3">★★★ 보통</option><option value="2">★★ 아쉬워요</option><option value="1">★ 별로예요</option></select>
+<div class="full"><div class="mu">세부 별점 (선택 · 같은 별을 다시 누르면 해제)</div><div id="subs"></div></div>
+<textarea class="full" id="review" placeholder="한줄평 · 감상 · 리뷰"></textarea>
+<div class="full acts"><button class="pri" type="submit">저장</button><button type="button" id="cancel" hidden>취소</button></div>
+</form>
+<div id="msg" class="mu"></div>
+</div>
+</section>
+</main>
+
+<nav><button data-t="home" class="on"><b>🏠</b>홈</button><button data-t="lib"><b>📖</b>서재</button><button data-t="add"><b>✏️</b>기록</button></nav>
+<div id="modal" hidden><div id="sheet"></div></div>
+
+<script>
+// Firebase 설정
+const firebaseConfig = {
+  apiKey: "AIzaSyC9VxcN2sGY2kfhipaWtQW3AY49HMy-8vc",
+  authDomain: "my-camping-db.firebaseapp.com",
+  projectId: "my-camping-db",
+  storageBucket: "my-camping-db.firebasestorage.app",
+  messagingSenderId: "868523029623",
+  appId: "1:868523029623:web:0a0f7d9944bca07e4f0272"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const won=n=>Math.round(n).toLocaleString('ko-KR')+'원';
+const GENRES=['판타지','현대판타지','로맨스','로맨스판타지','무협','BL','미스터리','스릴러','공포','SF','대체역사','게임','스포츠','라이트노벨','드라마','기타'];
+const gl=b=>Array.isArray(b.genres)?b.genres:[];
+const stars=n=>'★'.repeat(+n||0)+'☆'.repeat(5-(+n||0));
+const hue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
+const SUBS=[['story','스토리'],['char','캐릭터'],['prose','문체·필력'],['flow','전개·몰입도'],['end','결말'],['value','가성비']];
+const period=b=>{if(b.start&&b.date){const n=Math.round((new Date(b.date)-new Date(b.start))/864e5)+1;return `${esc(b.start)} ~ ${esc(b.date)} (${n}일)`}return b.date?esc(b.date)+' 완독':b.start?esc(b.start)+' 시작':''};
+const subHtml=b=>{const s=b.sub||{},ks=SUBS.filter(([k])=>s[k]);return ks.length?`<div class="card" style="margin:10px 0 0;padding:10px">${ks.map(([k,n])=>`<div class="sr"><span>${n}</span><span class="stars">${stars(s[k])}</span></div>`).join('')}</div>`:''};
+function drawSubs(){$('#subs').innerHTML=SUBS.map(([k,n])=>`<div class="sr"><span>${n}</span><span class="st" data-k="${k}">${[1,2,3,4,5].map(i=>`<button type="button" data-v="${i}" class="${(sub[k]||0)>=i?'on':''}" aria-label="${n}${i}점">★</button>`).join('')}</span></div>`).join('')}
+
+let books=[],goal=50,editId=null,editCover='',pendUrl='',clearCover=false,fg='',sub={};
+const say=t=>{$('#msg').textContent=t||''};
+const note=t=>{$('#note').textContent=t||''};
+
+function show(t){
+  for(const k of['home','lib','add'])$('#v-'+k).hidden=k!==t;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  window.scrollTo(0,0);
+}
+document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(b.dataset.t)});
+
+const thumb=(b,c)=>b.cover?`<img class="cv ${c||''}" loading="lazy" alt="" src="${b.cover}">`:`<div class="cv ${c||''}" style="background:hsl(${hue(b.title)} 35% 40%)"></div>`;
+
+function renderHome(){
+  const n=books.length,total=books.reduce((a,b)=>a+(+b.price||0),0),rated=books.filter(b=>b.rating);
+  const avg=rated.length?rated.reduce((a,b)=>a+ +b.rating,0)/rated.length:0;
+  const ym=new Date().toISOString().slice(0,7),yy=ym.slice(0,4);
+  $('#stats').innerHTML=[['읽은 책',n+'권'],['총 지출',won(total)],['평균 별점',n?avg.toFixed(1)+' ★':'-'],['이번 달',books.filter(b=>(b.date||'').startsWith(ym)).length+'권']].map(([k,v])=>`<div class="stat"><span>${k}</span><b>${esc(v)}</b></div>`).join('');
+  const yc=books.filter(b=>(b.date||'').startsWith(yy)).length,pc=Math.min(100,yc/Math.max(1,goal)*100);
+  $('#goalbox').innerHTML=`<b style="font-size:18px">${yc} / ${goal}권</b> <span class="mu">${Math.round(pc)}% 달성</span><div class="track"><div class="fill" style="width:${pc}%"></div></div>`;
+  if(document.activeElement!==$('#goalin'))$('#goalin').value=goal;
+  const m={};books.forEach(b=>{const k=(b.date||'').slice(0,7);if(!k)return;(m[k]=m[k]||{c:0,p:0});m[k].c++;m[k].p+=+b.price||0});
+  const ks=Object.keys(m).sort().slice(-6),mx=Math.max(1,...ks.map(k=>m[k].p));
+  $('#months').innerHTML=ks.length?ks.map(k=>`<div class="row"><span>${k.slice(2)}</span><div class="bar" style="width:${Math.max(2,m[k].p/mx*100)}%"></div><span class="mu">${m[k].c}권 · ${won(m[k].p)}</span></div>`).join(''):'<div class="empty">완독일을 입력하면 월별 통계가 보여요</div>';
+  const g={};books.forEach(b=>{const ls=gl(b);(ls.length?ls:['미분류']).forEach(k=>{(g[k]=g[k]||{c:0,s:0,r:0});g[k].c++;if(b.rating){g[k].s+=+b.rating;g[k].r++}})});
+  const gk=Object.keys(g).sort((a,b)=>g[b].c-g[a].c),gm=Math.max(1,...gk.map(k=>g[k].c));
+  $('#genres').innerHTML=gk.length?gk.map(k=>`<div class="row g"><span>${esc(k)}</span><div class="bar" style="width:${Math.max(2,g[k].c/gm*100)}%"></div><span class="mu">${g[k].c}권${g[k].r?' · ★'+(g[k].s/g[k].r).toFixed(1):''}</span></div>`).join(''):'<div class="empty">아직 기록이 없어요</div>';
+  const li=b=>`<div class="li" data-id="${esc(b.id)}">${thumb(b,'sm')}<div class="t"><b>${esc(b.title)}</b><span class="stars">${stars(b.rating)}</span>${b.review?`<div class="rv">${esc(b.review)}</div>`:''}</div></div>`;
+  const top=[...rated].sort((a,b)=>b.rating-a.rating||(b.date||'').localeCompare(a.date||'')).slice(0,5);
+  $('#top').innerHTML=top.length?top.map(li).join(''):'<div class="empty">별점을 남기면 순위가 보여요</div>';
+  const rc=books.filter(b=>b.review).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,3);
+  $('#recent').innerHTML=rc.length?rc.map(li).join(''):'<div class="empty">리뷰를 남겨 보세요</div>';
+}
+
+function renderLib(){
+  const used=GENRES.filter(x=>books.some(b=>gl(b).includes(x)));
+  if(fg&&!used.includes(fg))fg='';
+  $('#fchips').innerHTML=['',...used].map(x=>`<button type="button" data-g="${esc(x)}" class="${x===fg?'on':''}">${x||'전체'}</button>`).join('');
+  const r=+$('#fr').value;
+  const arr=books.filter(b=>(!fg||gl(b).includes(fg))&&(+b.rating||0)>=r).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  $('#cnt').textContent=arr.length+'권';
+  $('#grid').innerHTML=arr.length?arr.map(b=>`<div class="bk" data-id="${esc(b.id)}">${b.cover?`<img class="im" loading="lazy" alt="" src="${b.cover}">`:`<div class="im" style="background:hsl(${hue(b.title)} 35% 40%)">${esc(b.title)}</div>`}<b>${esc(b.title)}</b><span class="stars">${stars(b.rating)}</span></div>`).join(''):'<div class="empty" style="grid-column:1/-1">조건에 맞는 책이 없어요</div>';
+}
+const render=()=>{renderHome();renderLib()};
+$('#fchips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;fg=b.dataset.g;renderLib()});
+$('#fr').onchange=renderLib;
+
+// 상세 모달
+function openBook(id){
+  const b=books.find(x=>x.id===id);if(!b)return;
+  $('#sheet').innerHTML=`<div class="inl" style="align-items:flex-start;gap:12px">${thumb(b)}<div><h3>${esc(b.title)}</h3><div class="mu">${esc(b.author||'')}</div><div class="stars">${stars(b.rating)}</div><div class="mu">${period(b)}${b.vols?' · 총 '+b.vols+'권':''}${b.price?' · '+won(+b.price):''}</div></div></div>
+  <div style="margin-top:8px">${gl(b).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div>
+  ${subHtml(b)}<div class="rvf">${b.review?esc(b.review):'<span class="mu">작성한 리뷰가 없어요</span>'}</div>
+  <div class="acts"><button id="be">수정</button><button id="bd">삭제</button><button id="bc">닫기</button></div>`;
+  $('#modal').hidden=false;
+  $('#bc').onclick=closeM;
+  $('#be').onclick=()=>{closeM();editBook(b)};
+  $('#bd').onclick=async e=>{const t=e.target;
+    if(!t.dataset.sure){t.dataset.sure=1;t.textContent='정말 삭제?';setTimeout(()=>{t.textContent='삭제';delete t.dataset.sure},3000);return}
+    try{await db.collection("reading_books").doc(b.id).delete();closeM()}catch(err){t.textContent='삭제 실패'}};
+}
+const closeM=()=>{$('#modal').hidden=true};
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeM()});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(t&&!t.closest('#sheet'))openBook(t.dataset.id)});
+
+// 폼 관리
+function showPrev(src){const i=$('#cprev');i.hidden=!src;if(src)i.src=src;$('#cclear').hidden=!src}
+function reset(){editId=null;editCover='';pendUrl='';clearCover=false;showPrev('');$('#f').reset();sub={};drawSubs();$('#rating').value='5';$('#formTitle').textContent='책 기록하기';$('#cancel').hidden=true}
+function editBook(b){
+  editId=b.id;$('#title').value=b.title||'';$('#author').value=b.author||'';$('#price').value=b.price||'';$('#date').value=b.date||'';$('#vols').value=b.vols||'';$('#start').value=b.start||'';sub={...(b.sub||{})};drawSubs();$('#rating').value=b.rating||5;$('#review').value=b.review||'';
+  const gs=gl(b);document.querySelectorAll('#gchips input').forEach(x=>x.checked=gs.includes(x.value));
+  editCover=b.cover||'';pendUrl='';clearCover=false;showPrev(b.cover||'');
+  $('#formTitle').textContent='기록 수정';$('#cancel').hidden=false;say('');show('add');
+}
+$('#cancel').onclick=()=>{reset();show('lib')};
+
+$('#f').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const d={
+    title:$('#title').value.trim(),author:$('#author').value.trim(),
+    genres:[...document.querySelectorAll('#gchips input:checked')].map(x=>x.value),
+    vols:+$('#vols').value||0,price:+$('#price').value||0,start:$('#start').value,
+    date:$('#date').value,sub:{...sub},rating:+$('#rating').value,
+    review:$('#review').value.trim(),updatedAt:Date.now()
+  };
+  if(!d.title)return;
+  if(d.start&&d.date&&d.start>d.date)return say('시작일이 완독일보다 늦어요');
+
+  d.cover=pendUrl||(clearCover?'':editCover);
+
+  try{
+    say('저장 중…');
+    if(editId){
+      // update: 세부 별점(sub) 등 중첩 항목을 통째로 교체해서, 해제한 별점이 DB에서도 지워짐
+      await db.collection("reading_books").doc(editId).update(d);
+    }else{
+      d.createdAt=Date.now();
+      await db.collection("reading_books").add(d);
+    }
+    say('');reset();show('lib');
+  }catch(err){
+    console.error(err);
+    say('저장 실패: '+(err.message||'Firestore 규칙 설정을 확인해주세요.'));
+  }
+});
+
+$('#cpick').onclick=()=>$('#cfile').click();
+$('#cclear').onclick=()=>{pendUrl='';clearCover=true;showPrev('')};
+$('#cfile').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{
+    const url=await prep(f);
+    pendUrl=url;clearCover=false;showPrev(url);
+  }catch(err){say(err.message)}
+};
+
+function prep(f){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onerror=()=>rej(new Error('파일을 읽을 수 없어요'));
+    fr.onload=()=>{
+      const im=new Image();
+      im.onerror=()=>rej(new Error('이미지 형식을 읽을 수 없어요'));
+      im.onload=()=>{
+        const s=Math.min(1,400/Math.max(im.width,im.height));
+        const c=document.createElement('canvas');
+        c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+        const x=c.getContext('2d');
+        x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);
+        x.drawImage(im,0,0,c.width,c.height);
+        res(c.toDataURL('image/jpeg',0.75));
+      };
+      im.src=fr.result;
+    };
+    fr.readAsDataURL(f);
+  });
+}
+
+// 목표 저장
+$('#goalsave').onclick=async()=>{
+  const n=Math.max(1,Math.round(+$('#goalin').value||0));
+  try{
+    await db.collection("reading_meta").doc("settings").set({goal:n},{merge:true});
+    note('목표가 저장되었어요.');
+  }catch(err){note('목표 저장 실패: '+err.message)}
+};
+
+// UI 초기화
+$('#gchips').innerHTML=GENRES.map(x=>`<label><input type="checkbox" value="${x}"><span>${x}</span></label>`).join('');
+$('#subs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=b.parentElement.dataset.k,v=+b.dataset.v;if(sub[k]===v)delete sub[k];else sub[k]=v;drawSubs()});
+drawSubs();
+render(); // 연결 전에도 빈 화면 대신 기본 화면이 보이도록 먼저 그림
+
+// Firestore 실시간 리스너 연결
+db.collection("reading_books").onSnapshot(s=>{
+  books=s.docs.map(d=>({id:d.id,...d.data()}));
+  render();
+  note('☁️ Firebase 클라우드 연동 완료');
+}, err=>{
+  console.error(err);
+  note('⚠️ Firestore 연결 오류: '+(err.message||'규칙 설정을 확인해주세요.'));
+});
+
+db.collection("reading_meta").doc("settings").onSnapshot(d=>{
+  if(d.exists&&d.data().goal){
+    goal=+d.data().goal;
+    renderHome();
+  }
+});
+</script>
+</body>
+</html>
